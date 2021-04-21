@@ -32,8 +32,8 @@ class ChessBoard(tk.Frame):
         self.canvas.bind("<Button-1>", self.left_click)
 
     def add_piece(self, name, image, row=0, column=0):
-        '''Add a piece to the playing board'''
-        self.canvas.create_image(0 , 0, image=image, tags=(name, "piece"), anchor="c")
+        #Add a piece to the playing board
+        self.canvas.create_image(10 , 10, image=image, tags=(name, "piece"), anchor="c")
         
         
         #self.place_piece(name, row, column)
@@ -71,7 +71,7 @@ class ChessBoard(tk.Frame):
 
     def left_click(self, event):
         print( "clicked at", (math.floor(event.x / 100)), (math.floor(event.y / 100)))
-        self.canvas.create_oval(1, 1, 1, 1, fill="#476042", outline="#476042", width=10)
+        #self.canvas.create_oval(1, 1, 1, 1, fill="#476042", outline="#476042", width=10)
 
     def refresh_board(self, event):
         '''Redraw the board, possibly in response to window being resized'''
