@@ -31,6 +31,10 @@ class ChessBoard(tk.Frame):
         self.canvas.bind("<Configure>", self.refresh_board)
         self.canvas.bind("<Button-1>", self.left_click)
 
+        test_piece = tk.PhotoImage(file= self.path + "/pieces/testpiece.png")
+        self.canvas.create_image(50, 50, anchor="c", image=test_piece)
+        self.canvas.pack(side="top", fill="both", expand=True, padx=0, pady=0)
+
     def add_piece(self, name, image, row=0, column=0):
         #Add a piece to the playing board
         self.canvas.create_image(10 , 10, image=image, tags=(name, "piece"), anchor="c")
@@ -50,31 +54,24 @@ class ChessBoard(tk.Frame):
             elif piece.isnumeric():
                 x_value = x_value + (int(piece) - 1)
             else:
-                test_piece = ImageTk.PhotoImage(Image.open(self.path + "/pieces/testpiece.png"))
+                test_piece = PhotoImage(file= self.path + "/pieces/testpiece.ppm")
                 #print(piece, x_value, y_value)
-                self.add_piece("test_piece", test_piece, x_value, y_value)
-                self.canvas.update()
+                #self.add_piece("test_piece", test_piece, x_value, y_value)
+                test = canvas.create_image(50, 50, anchor=NE, image=test_piece)
+                #self.canvas.update()
                 #self.canvas.after(50, self.refresh_board)
             x_value = x_value + 1
         #self.canvas.update_idletasks()
         print("test")
         #tk.update()
 
-    '''
-    def place_piece(self, name, row, column):
-        ''''Place a piece at the given row/column''''
-        self.pieces[name] = (row, column)
-        x0 = (column * self.size) + int(self.size/2)
-        y0 = (row * self.size) + int(self.size/2)
-        self.canvas.coords(name, x0, y0)
-    '''
-
     def left_click(self, event):
         print( "clicked at", (math.floor(event.x / 100)), (math.floor(event.y / 100)))
         #self.canvas.create_oval(1, 1, 1, 1, fill="#476042", outline="#476042", width=10)
 
+    
     def refresh_board(self, event):
-        '''Redraw the board, possibly in response to window being resized'''
+        #Redraw the board, possibly in response to window being resized
         xsize = int((event.width-1) / self.columns)
         ysize = int((event.height-1) / self.rows)
         self.size = min(xsize, ysize)
@@ -89,15 +86,8 @@ class ChessBoard(tk.Frame):
                 y2 = y1 + self.size
                 self.canvas.create_rectangle(x1, y1, x2, y2, outline="black", fill=color, tags="square")
                 color = self.color1 if color == self.color2 else self.color2
-        self.draw_position(self.position)
-        
+        self.canvas.pack(side="top", fill="both", expand=True, padx=0, pady=0)
 
-        '''            
-        for name in self.position:
-            self.placepiece(name, self.position[name][0], self.position[name][1])
-        self.canvas.tag_raise("piece")
-        self.canvas.tag_lower("square")
-        '''
 
 # driver code
 if __name__ == "__main__":
