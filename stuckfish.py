@@ -18,6 +18,7 @@ class ChessBoard(tk.Frame):
         self.board = chess.Board()
         self.position = self.board.fen()[:(findnth(self.board.fen(), " ", 1) - 2)]
         self.path = os.getcwd()
+        
 
         canvas_height = self.columns * self.size
         canvas_width = self.rows * self.size
