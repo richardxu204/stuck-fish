@@ -1,3 +1,6 @@
+import tkinter as tk
+from tkinter.messagebox import showinfo
+
 def findnth(haystack, needle, n):
     parts= haystack.split(needle, n+1)
     if len(parts)<=n+1:
@@ -41,3 +44,15 @@ def convert_col(col):
         #error
         return
 
+
+class PopupWindow():
+
+    def __init__(self, master):
+        #self.master = master
+        window = tk.Toplevel(master)
+
+        label = tk.Label(window, text="Hello World!")
+        label.pack(fill='x', padx=50, pady=5)
+
+        button_close = tk.Button(window, text="Close", command=window.destroy)
+        button_close.pack(fill='x')

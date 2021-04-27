@@ -13,6 +13,7 @@ class ChessBoard(tk.Tk):
         super().resizable(False, False)
         self.chess = chess.Board()
         self.fen = self.chess.fen()
+        #self.fen = "4kbnr/Pp1npppp/1rb5/1N6/8/8/P3PPPP/R1B1KBNR b KQk - 0 12"
         self.path = os.getcwd()
         self.rows = 8
         self.columns = 8
@@ -23,6 +24,7 @@ class ChessBoard(tk.Tk):
         self.highlight_color2 = "#78ED84"
         self.title('Stuckfish Engine 0.001')
         self.geometry('800x800')
+        self.piece_type = "lichess"
         
         #self.images = {}
         self.images = []
@@ -61,7 +63,7 @@ class ChessBoard(tk.Tk):
         piece_moves = []
         for move in self.get_valid_moves():
             if move.startswith(piece_pos):
-                piece_moves.append(move[-2:])
+                piece_moves.append(move[2:])
         return piece_moves
 
     def left_click(self, event):
@@ -72,6 +74,8 @@ class ChessBoard(tk.Tk):
             self.overlay = [[0 for x in range(self.rows)] for y in range(self.columns)]
             self.overlay[click_y][click_x] = 1
             for move in self.get_piece_moves(clicked_square):
+                #needs to process 3 digits like g7h8n
+                #if move
                 self.overlay[8 - int(move[1])][int(convert_col(move[:1])) - 1] = 2
             self.draw_board()
             self.draw_position()
@@ -131,7 +135,10 @@ class ChessBoard(tk.Tk):
                 #piece_id = 1
                 self.position[y_value][x_value] = piece
                 cur_piece = self.piece_codes[piece]
-                piece_img = tk.PhotoImage(file="pieces/" + cur_piece + ".png")
+                if self.piece_type == "classic":
+                    piece_img = tk.PhotoImage(file="classic/" + cur_piece + ".png")
+                elif self.piece_type == "lichess":
+                    piece_img = tk.PhotoImage(file="lichess/" + cur_piece + ".png")
                 piece_id = self.canvas.create_image((x_value * 100) + 50, (y_value * 100) + 50, image=piece_img, tags="occupied", anchor="c")
                 self.images.append(piece_img)
             x_value = x_value + 1
@@ -142,5 +149,6 @@ class ChessBoard(tk.Tk):
 
 if __name__ == "__main__":
     board = ChessBoard()
+    #popup = PopupWindow(board)
     board.mainloop()
 
