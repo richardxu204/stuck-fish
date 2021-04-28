@@ -185,6 +185,9 @@ class chess_popup:
         
 class promotion_popup:
     def __init(self, master):
+        self.master = master
+        self.newWindow = tk.Toplevel()
+        
         print("test")
 
 if __name__ == "__main__":
