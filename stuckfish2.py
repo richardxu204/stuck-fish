@@ -25,8 +25,8 @@ class ChessBoard(tk.Tk):
         self.title('Stuckfish Engine 0.001')
         self.geometry('800x800')
         self.piece_type = "lichess"
+        self.play_type = 0
         
-        #self.images = {}
         self.images = []
         self.piece_codes = {'b': "bblack", 'B': "bwhite", 'k': "kblack", 'K': "kwhite", 'n': "nblack", 'N': "nwhite", 'p': "pblack", 'P': "pwhite", 'q': "qblack", 'Q': "qwhite", 'r': "rblack", 'R': "rwhite"}
         self.position = [[0 for x in range(self.rows)] for y in range(self.columns)] 
@@ -37,10 +37,14 @@ class ChessBoard(tk.Tk):
         self.canvas = tk.Canvas()
         self.canvas.pack(side="top", fill="both", expand=True, padx=0, pady=0)
 
+        
+        self.chess_popup()
+
         self.draw_board()
         self.draw_position()
         self.canvas.bind("<Button-1>", self.left_click)
 
+        
 
     def set_fen(self, fen):
         self.fen = fen
@@ -142,13 +146,51 @@ class ChessBoard(tk.Tk):
                 piece_id = self.canvas.create_image((x_value * 100) + 50, (y_value * 100) + 50, image=piece_img, tags="occupied", anchor="c")
                 self.images.append(piece_img)
             x_value = x_value + 1
-
     
+    def chess_popup(self):
+        
+        self.app = chess_popup(self)
+        #button_play = tk.Button(self.newWindow, text="Play Friend", command=self.play_friend)
+        #button_play.pack()
 
-  
+    '''
+    def play_friend(self):
+        print("ye boi")
+        super().destroy()
+        #self.master.destroy
+        self.play_type = 0
+        #window.destroy()
+    '''
+
+class chess_popup:    
+    def __init__(self, master):
+        self.master = master
+        self.newWindow = tk.Toplevel()
+
+        button_play = tk.Button(self.newWindow, text="Play Friend", command=self.play_friend)
+        button_stuckfish = tk.Button(self.newWindow, text="Play Stuckfish", command=self.play_bot)
+        button_close = tk.Button(self.newWindow, text="Quit", command=self.master.destroy)
+
+        button_play.pack(fill='x')
+        button_stuckfish.pack(fill='x')
+        button_close.pack(fill='x')
+
+    def play_friend(self):
+        self.newWindow.destroy()
+        self.master.play_type = 0
+
+    def play_bot(self):
+        self.newWindow.destroy()
+        self.master.play_type = 1
+        
+class promotion_popup:
+    def __init(self, master):
+        print("test")
 
 if __name__ == "__main__":
+    
     board = ChessBoard()
-    #popup = PopupWindow(board)
+    #popup = PopupWindow()
+
     board.mainloop()
 

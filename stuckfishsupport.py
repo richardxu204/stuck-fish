@@ -45,14 +45,3 @@ def convert_col(col):
         return
 
 
-class PopupWindow():
-
-    def __init__(self, master):
-        #self.master = master
-        window = tk.Toplevel(master)
-
-        label = tk.Label(window, text="Hello World!")
-        label.pack(fill='x', padx=50, pady=5)
-
-        button_close = tk.Button(window, text="Close", command=window.destroy)
-        button_close.pack(fill='x')
