@@ -1,6 +1,9 @@
 import tkinter as tk
 from tkinter.messagebox import showinfo
 
+'''
+Supporting functions are primarily string manipulation and conversion functions
+'''
 def findnth(haystack, needle, n):
     parts= haystack.split(needle, n+1)
     if len(parts)<=n+1:
