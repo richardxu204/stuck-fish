@@ -2,7 +2,7 @@ import sys, os
 import tkinter as tk
 import chess
 import math
-from PIL import ImageTk, Image
+#from PIL import ImageTk, Image
 from stuckfishsupport import *
 from optiondialogue import * 
 from alphaghetto import *
@@ -83,7 +83,11 @@ class ChessBoard(tk.Tk):
 
         - self.selection helps keep track of when the player is toggling between selecting a piece or selecting a destination
 
-        - self.promotion_piece is 
+        - self.promotion_piece is used to store (temporarily) the piece returned by the promotion piece selection prompt
+
+        - self.piece_square is meant to track the square in which the selected piece rests on
+
+        - self.player_turn is used to determine whether it is the player's turn or the bot's turn (used only in bot play mode)
         '''
         self.selection = 0
         self.promotion_piece = ""
