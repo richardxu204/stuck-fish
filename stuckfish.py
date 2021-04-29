@@ -189,26 +189,35 @@ class ChessBoard(tk.Tk):
                     self.chess.push(chess.Move.from_uci(self.piece_square + clicked_square + self.promotion_piece))
                     self.promotion_piece = ""
                     self.fen = self.chess.fen()
+                    if self.play_type == 1:
+                        self.player_turn = 0
+                        self.bot_move()
                 elif self.get_piece(int(convert_col(self.piece_square[0]) - 1), (8 - int(self.piece_square[1]))) == "p" and int(clicked_square[1:]) == 1:
                     self.chess_popup(self.canvas, "promotion")
                     self.chess.push(chess.Move.from_uci(self.piece_square + clicked_square + self.promotion_piece))
                     self.promotion_piece = ""
                     self.fen = self.chess.fen()
+                    if self.play_type == 1:
+                        self.player_turn = 0
+                        self.bot_move()
                 elif clicked_square in self.get_piece_moves(self.piece_square):
                     self.chess.push(chess.Move.from_uci(self.piece_square + clicked_square))
                     self.fen = self.chess.fen()
+                    if self.play_type == 1:
+                        self.player_turn = 0
+                        self.bot_move()
                 self.piece_square = ""
                 self.overlay = [[0 for x in range(self.rows)] for y in range(self.columns)]
                 self.selection = 0
                 self.draw_board()
                 self.draw_position()
-                if self.play_type == 1:
-                        self.player_turn = 0
+                #if self.play_type == 1:
+                    #self.player_turn = 0
+                    #self.bot_move()
             if self.chess.is_checkmate():
                 self.chess_popup(self.canvas, "game")
 
-        if self.play_type == 1:
-            self.bot_move()
+                
         '''
         else:
             self.stuckfish.set_moves_list(self.get_valid_moves())
