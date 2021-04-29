@@ -116,6 +116,10 @@ class ChessBoard(tk.Tk):
     '''
     def set_fen(self, fen):
         self.fen = fen
+        self.chess.set_board_fen(fen)
+
+    def get_fen(self):
+        return self.fen
     
     def reset_position(self, perspective="w"):
         self.position = [[0 for x in range(self.rows)] for y in range(self.columns)]
@@ -133,12 +137,20 @@ class ChessBoard(tk.Tk):
     def bot_move(self):
         if self.player_turn == 0:
             self.stuckfish.set_moves_list(self.get_valid_moves())
+            self.stuckfish.ingest_fen(self.fen)
             self.chess.push(chess.Move.from_uci(self.stuckfish.pick_random()))
+            print(self.stuckfish.calculate_material())
             self.fen = self.chess.fen()
             self.draw_board()
             self.draw_position()
+            if self.chess.is_checkmate():
+                self.chess_popup(self.canvas, "checkmate")
+            elif self.chess.is_stalemate():
+                self.chess_popup(self.canvas, "stalemate")
+            elif self.chess.is_insufficient_material():
+                self.chess_popup(self.canvas, "insufficient")
             self.player_turn = 1
-        self.after(5000, self.bot_move)
+        self.after(2000, self.bot_move)
 
     '''
     - get_valid_moves is important to return the list of valid moves in the original python-chess format
@@ -191,7 +203,7 @@ class ChessBoard(tk.Tk):
                     self.fen = self.chess.fen()
                     if self.play_type == 1:
                         self.player_turn = 0
-                        self.bot_move()
+                        #self.bot_move()
                 elif self.get_piece(int(convert_col(self.piece_square[0]) - 1), (8 - int(self.piece_square[1]))) == "p" and int(clicked_square[1:]) == 1:
                     self.chess_popup(self.canvas, "promotion")
                     self.chess.push(chess.Move.from_uci(self.piece_square + clicked_square + self.promotion_piece))
@@ -199,13 +211,15 @@ class ChessBoard(tk.Tk):
                     self.fen = self.chess.fen()
                     if self.play_type == 1:
                         self.player_turn = 0
-                        self.bot_move()
+                        #self.bot_move()
                 elif clicked_square in self.get_piece_moves(self.piece_square):
                     self.chess.push(chess.Move.from_uci(self.piece_square + clicked_square))
                     self.fen = self.chess.fen()
                     if self.play_type == 1:
                         self.player_turn = 0
-                        self.bot_move()
+                        #self.bot_move()
+                elif clicked_square not in self.get_piece_moves(self.piece_square) and self.chess.is_check():
+                    self.chess_popup(self.canvas, "check")
                 self.piece_square = ""
                 self.overlay = [[0 for x in range(self.rows)] for y in range(self.columns)]
                 self.selection = 0
@@ -215,7 +229,12 @@ class ChessBoard(tk.Tk):
                     #self.player_turn = 0
                     #self.bot_move()
             if self.chess.is_checkmate():
-                self.chess_popup(self.canvas, "game")
+                self.chess_popup(self.canvas, "checkmate")
+            elif self.chess.is_stalemate():
+                self.chess_popup(self.canvas, "stalemate")
+            elif self.chess.is_insufficient_material():
+                self.chess_popup(self.canvas, "insufficient")
+
 
                 
         '''
@@ -308,12 +327,26 @@ class ChessBoard(tk.Tk):
             elif self.promotions.result == "Knight":
                 self.promotion_piece = "n"
 
-        elif box_type == "game":
-            self.start = OptionDialog(self.canvas, 'Game Over',"Checkmate!!!", [ "Quit"])
+        elif box_type == "checkmate":
+            self.start = OptionDialog(self.canvas, 'Game Over',"Checkmate!!!", ["Quit"])
+            if self.start.result == "Quit":
+                master.destroy()
+                quit()
+        
+        elif box_type == "stalemate":
+            self.start = OptionDialog(self.canvas, 'Game Over',"Stalemate!!!", ["Quit"])
+            if self.start.result == "Quit":
+                master.destroy()
+                quit()
+        
+        elif box_type == "insufficient":
+            self.start = OptionDialog(self.canvas, 'Game Over',"Draw: insufficient material!", ["Quit"])
             if self.start.result == "Quit":
                 master.destroy()
                 quit()
 
+        elif box_type == "check":
+            self.start = OptionDialog(self.canvas, 'Check',"Your king is in check", ["Ok sorry I'm dumb"])
 
         
         
@@ -323,6 +356,6 @@ Driver code
 if __name__ == "__main__":
     
     board = ChessBoard()
-
+    board.bot_move()
     board.mainloop()
 
