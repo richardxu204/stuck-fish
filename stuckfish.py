@@ -5,7 +5,7 @@ import math
 #from PIL import ImageTk, Image
 from stuckfishsupport import *
 from optiondialogue import * 
-from alphaghetto import *
+from stuckfishengine import *
 
 '''
 Stuckfish Engine 0.001 - "AlphaGhetto" 
@@ -107,7 +107,7 @@ class ChessBoard(tk.Tk):
         self.draw_board()
         self.draw_position()
         if self.play_type == 1:
-            self.stuckfish = AlphaGhetto()
+            self.stuckfish = Stuckfish()
         self.canvas.bind("<Button-1>", self.left_click)
 
         
