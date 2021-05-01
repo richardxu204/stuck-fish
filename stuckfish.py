@@ -3,6 +3,7 @@ import tkinter as tk
 import chess
 import math
 #from PIL import ImageTk, Image
+from playsound import playsound
 from stuckfishsupport import *
 from optiondialogue import * 
 from stuckfishengine import *
@@ -139,16 +140,19 @@ class ChessBoard(tk.Tk):
             self.stuckfish.set_moves_list(self.get_valid_moves())
             self.stuckfish.ingest_fen(self.fen)
             self.chess.push(chess.Move.from_uci(self.stuckfish.pick_random()))
-            print(self.stuckfish.calculate_material())
+            #print(self.stuckfish.calculate_material())
             self.fen = self.chess.fen()
             self.draw_board()
             self.draw_position()
+            playsound('sounds/piecemove.wav')
             if self.chess.is_checkmate():
                 self.chess_popup(self.canvas, "checkmate")
             elif self.chess.is_stalemate():
                 self.chess_popup(self.canvas, "stalemate")
             elif self.chess.is_insufficient_material():
                 self.chess_popup(self.canvas, "insufficient")
+            elif self.chess.can_claim_threefold_repetition():
+                self.chess_popup(self.canvas, "threefold")
             self.player_turn = 1
         self.after(2000, self.bot_move)
 
@@ -201,6 +205,7 @@ class ChessBoard(tk.Tk):
                     self.chess.push(chess.Move.from_uci(self.piece_square + clicked_square + self.promotion_piece))
                     self.promotion_piece = ""
                     self.fen = self.chess.fen()
+                    playsound('sounds/piecemove.wav')
                     if self.play_type == 1:
                         self.player_turn = 0
                         #self.bot_move()
@@ -209,12 +214,14 @@ class ChessBoard(tk.Tk):
                     self.chess.push(chess.Move.from_uci(self.piece_square + clicked_square + self.promotion_piece))
                     self.promotion_piece = ""
                     self.fen = self.chess.fen()
+                    playsound('sounds/piecemove.wav')
                     if self.play_type == 1:
                         self.player_turn = 0
                         #self.bot_move()
                 elif clicked_square in self.get_piece_moves(self.piece_square):
                     self.chess.push(chess.Move.from_uci(self.piece_square + clicked_square))
                     self.fen = self.chess.fen()
+                    playsound('sounds/piecemove.wav')
                     if self.play_type == 1:
                         self.player_turn = 0
                         #self.bot_move()
@@ -327,6 +334,7 @@ class ChessBoard(tk.Tk):
             elif self.promotions.result == "Knight":
                 self.promotion_piece = "n"
 
+        # popups for the different possible outcomes
         elif box_type == "checkmate":
             self.start = OptionDialog(self.canvas, 'Game Over',"Checkmate!!!", ["Quit"])
             if self.start.result == "Quit":
@@ -345,8 +353,12 @@ class ChessBoard(tk.Tk):
                 master.destroy()
                 quit()
 
+        elif box_type == "threefold":
+            self.start = OptionDialog(self.canvas, 'Game Over',"Draw: threefold repetition", ["Quit"])
+
+
         elif box_type == "check":
-            self.start = OptionDialog(self.canvas, 'Check',"Your king is in check", ["Ok sorry I'm dumb"])
+            self.start = OptionDialog(self.canvas, 'Check',"Your king is in check", ["Ok sorry I'm blind"])
 
         
         

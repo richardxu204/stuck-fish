@@ -5,26 +5,32 @@ import random
 import scipy, numpy, pandas, sklearn
 import sqlite3
 from stuckfishsupport import * 
+from alphaghetto import *
 
 class Stuckfish(object):
     def __init__(self, perspective="b"):
         self.connection = sqlite3.connect("alphaghetto.db")
-        self.fen = ""
+        #self.fen = ""
         self.perspective = perspective
         self.moves_list = []
         self.engine = AlphaGhetto()
-        #self.piece_values = {'K': 10000, 'k': 10000, 'Q': 90, 'q': 90, 'R': 50, 'r': 50, 'B': 35, 'b': 35, 'N': 33, 'n': 33, 'P': 10, 'p': 10}
 
     def set_moves_list(self, moves):
         self.moves_list = moves
 
+    #first iteration test
     def pick_random(self):
         if len(self.moves_list) > 0:
             return random.choice(self.moves_list)
 
+    #second iteration test
+    def pick_simple_ag(self):
+        self.engine.set_fen(self.fen)
+        return self.engine.simple_selection()
 
     def ingest_fen(self, fen):
-        self.fen = fen
+        #self.fen = fen
+        self.engine.set_fen(fen)
 
     def get_position(self):
         return self.fen[:(findnth(self.fen, " ", 1) - 2)]
