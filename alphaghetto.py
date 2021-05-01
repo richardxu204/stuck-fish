@@ -27,6 +27,10 @@ class AlphaGhetto(object):
         self.fen = fen
         self.board.set_fen(fen)
 
+    def set_moves_list(self, moves):
+        self.moves_list = moves
+
+
     def calculate_total_material(self):
         material_score = 0
         if self.perspective == "b":
