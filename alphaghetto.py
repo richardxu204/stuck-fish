@@ -21,8 +21,7 @@ class AlphaGhetto(object):
         self.perspective = perspective
         self.position = [[0 for x in range(self.rows)] for y in range(self.columns)]
         self.moves_list = []
-        self.piece_values = {'K': 10000, 'k': 10000, 'Q': 90, 'q': 90, 'R': 50,
-                             'r': 50, 'B': 35, 'b': 35, 'N': 33, 'n': 33, 'P': 10, 'p': 10}
+        self.piece_values = {'K': 10000, 'k': 10000, 'Q': 90, 'q': 90, 'R': 50, 'r': 50, 'B': 35, 'b': 35, 'N': 33, 'n': 33, 'P': 10, 'p': 10}
         self.chess = chess
         self.board = self.chess.Board()
         self.move_spread = 10
