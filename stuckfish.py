@@ -129,18 +129,29 @@ class ChessBoard(tk.Tk):
     def get_position(self, position):
         return position[:(findnth(position, " ", 1) - 2)]
 
+    '''
+    get_piece used for interacting with self.position representation
+    get_piece_at takes in string ("e4", "d5") and returns self.position representation
+    '''
     def get_piece(self, piece_x, piece_y):
         return self.position[piece_y][piece_x]
+
+    def get_piece_at(self, location):
+        self.file = convert_col(location[:1])
+        self.rank = location[1:]
+        return self.position[8-int(self.rank)][int(self.file)]
+
 
     '''
     Bot functionality
     '''
     def bot_move(self):
         if self.player_turn == 0:
-            self.stuckfish.set_moves_list(self.get_valid_moves())
-            self.stuckfish.ingest_fen(self.fen)
-            self.chess.push(chess.Move.from_uci(self.stuckfish.pick_random()))
+            #self.stuckfish.set_moves_list(self.get_valid_moves())
+            self.stuckfish.ingest_fen(self.fen, self.position)
+            #self.chess.push(chess.Move.from_uci(self.stuckfish.pick_random()))
             #print(self.stuckfish.calculate_material())
+
             self.fen = self.chess.fen()
             self.draw_board()
             self.draw_position()
@@ -241,6 +252,8 @@ class ChessBoard(tk.Tk):
                 self.chess_popup(self.canvas, "stalemate")
             elif self.chess.is_insufficient_material():
                 self.chess_popup(self.canvas, "insufficient")
+            elif self.chess.can_claim_threefold_repetition():
+                self.chess_popup(self.canvas, "threefold")
 
 
                 
@@ -355,11 +368,15 @@ class ChessBoard(tk.Tk):
 
         elif box_type == "threefold":
             self.start = OptionDialog(self.canvas, 'Game Over',"Draw: threefold repetition", ["Quit"])
-
+            if self.start.result == "Quit":
+                master.destroy()
+                quit()
 
         elif box_type == "check":
             self.start = OptionDialog(self.canvas, 'Check',"Your king is in check", ["Ok sorry I'm blind"])
-
+            if self.start.result == "Quit":
+                master.destroy()
+                quit()
         
         
 '''

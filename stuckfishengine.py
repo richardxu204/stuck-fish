@@ -28,9 +28,10 @@ class Stuckfish(object):
         self.engine.set_fen(self.fen)
         return self.engine.simple_selection()
 
-    def ingest_fen(self, fen):
+    def ingest_fen(self, fen, position):
         #self.fen = fen
         self.engine.set_fen(fen)
+        self.engine.set_position(position)
 
     def get_position(self):
         return self.fen[:(findnth(self.fen, " ", 1) - 2)]
