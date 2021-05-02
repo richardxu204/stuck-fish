@@ -72,10 +72,11 @@ class AlphaGhetto(object):
         selected_moves = random.sample(self.chess.get_valid_moves(), self.move_depth)
         for move in selected_moves:
             while current_depth < self.move_depth:
-                scan_position
+                scan_position(self.current_depth, self.position)
 
     def scan_position(self, depth, position):
         depth = depth + 1
+        
 
     def get_attacker_locations(self, square_name, perspective='b'):
         self.square_name = square_name
