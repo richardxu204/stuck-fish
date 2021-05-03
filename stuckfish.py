@@ -141,6 +141,9 @@ class ChessBoard(tk.Tk):
         self.rank = location[1:]
         return self.position[8-int(self.rank)][int(self.file)]
 
+    def get_square_name(self, piece_x, piece_y):
+        square_name = convert_col(piece_x + 1) + str(8 - piece_y)
+        return square_name
 
     '''
     Bot functionality
