@@ -24,10 +24,10 @@ class AlphaGhetto(object):
         self.piece_values = {'K': 10000, 'k': 10000, 'Q': 90, 'q': 90, 'R': 50, 'r': 50, 'B': 35, 'b': 35, 'N': 33, 'n': 33, 'P': 10, 'p': 10}
         self.chess = chess
         self.board = self.chess.Board()
-        self.move_spread = 10
+        self.move_spread = 20
         self.move_depth = 3
         
-    def get_position(self):
+    def get_fen_position(self):
         return self.fen[:(findnth(self.fen, " ", 1) - 2)]
 
     def set_fen(self, fen):
@@ -67,10 +67,10 @@ class AlphaGhetto(object):
 
                 if perspective == "b":
                     if self.get_piece(piece_file, piece_rank) in ['q', 'r', 'b', 'n', 'p']:
-                        material_score = material_score + self.calculate_piece_value(piece_file, piece_rank)
+                        material_score = material_score + self.calculate_piece_value(piece_file, piece_rank, perspective)
                 elif perspective == "w":
                     if self.get_piece(piece_file, piece_rank) in ['Q', 'R', 'B', 'N', 'P']:
-                        material_score = material_score + self.calculate_piece_value(piece_file, piece_rank)
+                        material_score = material_score + self.calculate_piece_value(piece_file, piece_rank, perspective)
         return material_score
 
     def refresh_position(self):
@@ -78,7 +78,7 @@ class AlphaGhetto(object):
         
         x_value = 0
         y_value = 0
-        for piece in self.get_position():
+        for piece in self.get_fen_position():
             if piece == "/":
                 x_value = -1
                 y_value = y_value + 1
@@ -89,9 +89,9 @@ class AlphaGhetto(object):
             x_value = x_value + 1
 
 
-    def calculate_piece_value(self, piece_x, piece_y):
+    def calculate_piece_value(self, piece_x, piece_y, perspective):
         piece_value = self.piece_values.get(self.get_piece(piece_x, piece_y))
-        piece_value = piece_value + self.calculate_piece_bonus(piece_x, piece_y)
+        piece_value = piece_value + self.calculate_piece_bonus(piece_x, piece_y) + self.calculate_capture_prospects(piece_x, piece_y, perspective)
         return piece_value
 
     def calculate_piece_bonus(self, piece_x, piece_y):
@@ -103,36 +103,41 @@ class AlphaGhetto(object):
             for attacker in self.get_attacker_locations(self.get_square_name(piece_x, piece_y).capitalize(), 'w'):
                 if self.get_piece_at(attacker) == 'P':
                     bonus = bonus + 2
-                defender_points = defender_points + int(self.piece_values.get(self.get_piece_at(attacker)))
+               
+                #defender_points = defender_points + int(self.piece_values.get(self.get_piece_at(attacker)))
             for attacker in self.get_attacker_locations(self.get_square_name(piece_x, piece_y).capitalize(), 'b'):
                 defender_points = defender_points + int(self.piece_values.get(self.get_piece_at(attacker)))
             if piece_x == 3 or piece_x == 4:
-                bonus = bonus + 2
+                if piece_y == 3 or piece_y == 4:
+                    bonus = bonus + 3
+                bonus = bonus + 5
             elif piece_x == 2 or piece_x == 5:
                 bonus = bonus + 1
-            elif attacker_points >= defender_points:
+            if attacker_points >= defender_points:
                 bonus = bonus - 10
         elif self.get_piece(piece_x, piece_y) == 'p':
             bonus = bonus + ((piece_y - 1) * 2)
             for attacker in self.get_attacker_locations(self.get_square_name(piece_x, piece_y).capitalize(), 'b'):
                 if self.get_piece_at(attacker) == 'p':
                     bonus = bonus + 2
-                defender_points = defender_points + int(self.piece_values.get(self.get_piece_at(attacker)))
+                #defender_points = defender_points + int(self.piece_values.get(self.get_piece_at(attacker)))
             for attacker in self.get_attacker_locations(self.get_square_name(piece_x, piece_y).capitalize(), 'w'):
                 defender_points = defender_points + int(self.piece_values.get(self.get_piece_at(attacker)))
             if piece_x == 3 or piece_x == 4:
-                bonus = bonus + 2
+                if piece_y == 3 or piece_y == 4:
+                    bonus = bonus + 3
+                bonus = bonus + 5
             elif piece_x == 2 or piece_x == 5:
                 bonus = bonus + 1
-            elif attacker_points >= defender_points:
+            if attacker_points >= defender_points:
                 bonus = bonus - 10
         elif self.get_piece(piece_x, piece_y) == 'N':
-            if piece_x == 1 or piece_x == 8 or piece_y == 1 or piece_y == 8:
+            if piece_x == 0 or piece_x == 7 or piece_y == 0 or piece_y == 7:
                 bonus = bonus - 10
             elif piece_x == 5 and piece_y == 3:
                 bonus = bonus + 5
         elif self.get_piece(piece_x, piece_y) == 'n':
-            if piece_x == 1 or piece_x == 8 or piece_y == 1 or piece_y == 8:
+            if piece_x == 0 or piece_x == 7 or piece_y == 0 or piece_y == 7:
                 bonus = bonus - 10
             elif piece_x == 5 and piece_y == 3:
                 bonus = bonus + 5
@@ -144,22 +149,35 @@ class AlphaGhetto(object):
             for attacker in self.get_attacker_locations(self.get_square_name(piece_x, piece_y).capitalize(), 'b'):
                 if self.get_piece_at(attacker) == 'r':
                     bonus = bonus + 10
-            
+        
         return bonus
 
+    def calculate_capture_prospects(self, piece_x, piece_y, perspective):
+        bonus = 0
+        defender_points = 0
+        attacker_points = self.piece_values[self.get_piece(piece_x, piece_y)]
+        if len(self.get_attacking_locations(self.get_square_name(piece_x, piece_y).capitalize(), 'w')) > 0:
+            for attack in self.get_attacking_locations(self.get_square_name(piece_x, piece_y).capitalize(), 'w'):
+                attacked_piece = self.chess.square_name(attack)
+                attacked_piece
+        return bonus
 
-    def simple_selection(self):
+    def simple_selection(self, perspective):
         considered_moves = {}
         self.current_depth = 0
-        selected_moves = random.sample(self.get_valid_moves(), self.move_spread)
+        if len(self.get_valid_moves()) > 10:
+            selected_moves = random.sample(self.get_valid_moves(), self.move_spread)
+        else:
+            selected_moves = self.get_valid_moves()
         for move in selected_moves:
             '''
             while current_depth < self.move_depth:
                 scan_position(self.current_depth, self.position)
             '''
             self.board.push(chess.Move.from_uci(move))
+            self.fen = self.board.fen()
             self.refresh_position()
-            considered_moves[move] = self.calculate_total_material('b')
+            considered_moves[move] = self.calculate_total_material(perspective)
             self.board.pop()
         return max(considered_moves, key=considered_moves.get)
                 
@@ -181,6 +199,19 @@ class AlphaGhetto(object):
                 if square in self.board.attackers(chess.WHITE, getattr(chess, self.square_name)):
                     attackers.append(chess.square_name(square))
         return attackers
+
+    def get_attacking_locations(self, square_name, perspective):
+        self.square_name = square_name
+        attacking = []
+        if perspective == 'b':
+            for square in self.chess.SQUARES:
+                if square in self.board.attacks(chess.BLACK, getattr(chess, self.square_name)):
+                    attacking.append(chess.square_name(square))
+        if perspective == 'w':
+            for square in self.chess.SQUARES:
+                if square in self.board.attacks(chess.WHITE, getattr(chess, self.square_name)):
+                    attacking.append(chess.square_name(square))
+        return attacking
 
     def initialize_tensors(self):
         print("test")

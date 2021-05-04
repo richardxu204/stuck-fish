@@ -152,8 +152,8 @@ class ChessBoard(tk.Tk):
         if self.player_turn == 0:
             #self.stuckfish.set_moves_list(self.get_valid_moves())
             self.stuckfish.ingest_fen(self.fen, self.position)
-            #self.chess.push(chess.Move.from_uci(self.stuckfish.pick_random()))
-            #print(self.stuckfish.calculate_material())
+            self.chess.push(chess.Move.from_uci(self.stuckfish.engine.simple_selection('b')))
+            #print(self.stuckfish.engine.simple_selection())
 
             self.fen = self.chess.fen()
             self.draw_board()
