@@ -7,4 +7,5 @@ stuckfish bot in development:
   currently implemented piece value calculations
   added db to store games/positional evaluations
   added attacking identification module
+  added starting point calculation for piece bonuses
 stuckfish v001
