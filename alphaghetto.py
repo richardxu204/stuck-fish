@@ -69,6 +69,24 @@ class AlphaGhetto(object):
     def get_square_name(self, piece_x, piece_y):
         square_name = convert_col(piece_x + 1) + str(8 - piece_y)
         return square_name
+    
+    '''
+    Re-plots the array representation of the game position (state) based on the ingested fen
+    '''
+
+    def refresh_position(self):
+        self.position = [[0 for x in range(self.rows)] for y in range(self.columns)]
+        x_value = 0
+        y_value = 0
+        for piece in self.get_fen_position():
+            if piece == "/":
+                x_value = -1
+                y_value = y_value + 1
+            elif piece.isnumeric():
+                x_value = x_value + (int(piece) - 1)
+            else:
+                self.position[y_value][x_value] = piece
+            x_value = x_value + 1
 
     '''
     One of the primary methods of calculating scores of moves
@@ -88,20 +106,7 @@ class AlphaGhetto(object):
                         material_score = material_score + self.calculate_piece_value(piece_file, piece_rank, perspective)
         return material_score
 
-    def refresh_position(self):
-        self.position = [[0 for x in range(self.rows)] for y in range(self.columns)]
-        
-        x_value = 0
-        y_value = 0
-        for piece in self.get_fen_position():
-            if piece == "/":
-                x_value = -1
-                y_value = y_value + 1
-            elif piece.isnumeric():
-                x_value = x_value + (int(piece) - 1)
-            else:
-                self.position[y_value][x_value] = piece
-            x_value = x_value + 1
+
 
 
     def calculate_piece_value(self, piece_x, piece_y, perspective):
@@ -174,7 +179,7 @@ class AlphaGhetto(object):
         if len(self.get_attacking_locations(self.get_square_name(piece_x, piece_y).capitalize(), 'w')) > 0:
             for attack in self.get_attacking_locations(self.get_square_name(piece_x, piece_y).capitalize(), 'w'):
                 attacked_piece = self.chess.square_name(attack)
-                attacked_piece
+                defender_points = defender_points + self.piece_values[self.get_piece_at(attacked_piece)]
         return bonus
 
     def simple_selection(self, perspective):
