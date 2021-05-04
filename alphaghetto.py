@@ -172,6 +172,9 @@ class AlphaGhetto(object):
         
         return bonus
 
+    '''
+    Independently evaluates the payoff of capturing an opponent's piece, based on the value of the attackers and the defenders
+    '''
     def calculate_capture_prospects(self, piece_x, piece_y, perspective):
         bonus = 0
         defender_points = 0
