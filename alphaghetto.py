@@ -11,6 +11,11 @@ import torch
 import sqlite3
 from stuckfishsupport import *
 
+'''
+AlphaGhetto v001
+
+Conceptually simple, first iteration of chess bot. Clones the game from stuckfish to run analysis on states of the game.
+'''
 
 class AlphaGhetto(object):
     def __init__(self, perspective="b"):
@@ -27,6 +32,12 @@ class AlphaGhetto(object):
         self.move_spread = 20
         self.move_depth = 3
         
+    '''
+    Initialization functions
+    
+    There is some measure of difference between the names of objects in AlphaGhetto and Stuckfish, as there was some additional depth needed in AlphaGhetto. 
+    The most obvious being self.chess no longer is related to Board() but rather the chess module (needs to access chess.SQUARES), and self.board is the Board()
+    '''
     def get_fen_position(self):
         return self.fen[:(findnth(self.fen, " ", 1) - 2)]
 
@@ -59,6 +70,10 @@ class AlphaGhetto(object):
         square_name = convert_col(piece_x + 1) + str(8 - piece_y)
         return square_name
 
+    '''
+    One of the primary methods of calculating scores of moves
+    This method calculates piece values by perspective and adds/subtracts any positional bonus points to the piece values
+    '''
     def calculate_total_material(self, perspective):
         material_score = 0
 
