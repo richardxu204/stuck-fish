@@ -111,7 +111,8 @@ class AlphaGhetto(object):
 
     def calculate_piece_value(self, piece_x, piece_y, perspective):
         piece_value = self.piece_values.get(self.get_piece(piece_x, piece_y))
-        piece_value = piece_value + self.calculate_piece_bonus(piece_x, piece_y) + self.calculate_capture_prospects(piece_x, piece_y, perspective)
+        #piece_value = piece_value + self.calculate_piece_bonus(piece_x, piece_y) + self.calculate_capture_prospects(piece_x, piece_y, perspective)
+        piece_value = piece_value + self.calculate_piece_bonus(piece_x, piece_y)
         return piece_value
 
     def calculate_piece_bonus(self, piece_x, piece_y):
@@ -176,19 +177,27 @@ class AlphaGhetto(object):
     Independently evaluates the payoff of capturing an opponent's piece, based on the value of the attackers and the defenders
     '''
     def calculate_capture_prospects(self, piece_x, piece_y, perspective):
-        bonus = 0
-        defender_points = 0
-        attacker_points = self.piece_values[self.get_piece(piece_x, piece_y)]
+        captures = {}
         if len(self.get_attacking_locations(self.get_square_name(piece_x, piece_y).capitalize(), 'w')) > 0:
             for attack in self.get_attacking_locations(self.get_square_name(piece_x, piece_y).capitalize(), 'w'):
                 attacked_piece = self.chess.square_name(attack)
-                defender_points = defender_points + self.piece_values[self.get_piece_at(attacked_piece)]
+                number_defenders = 0
+                number_attackers = 0
+                if perspective == 'b':
+                    for defender in self.get_attacker_locations(attacked_piece, 'b'):
+                        
+                        defender_points = 0
+                        bonus = 0
+                        
+                        defender_points = defender_points + self.piece_values[self.get_piece_at(defender)]
+                    for attacker in self.get_attacker_locations(attacked_piece, 'b'):
+                        attacker_points = attacker_points + self.piece_values[self.get_piece_at(attacker)]
         return bonus
 
     def simple_selection(self, perspective):
         considered_moves = {}
         self.current_depth = 0
-        if len(self.get_valid_moves()) > 10:
+        if len(self.get_valid_moves()) > self.move_spread:
             selected_moves = random.sample(self.get_valid_moves(), self.move_spread)
         else:
             selected_moves = self.get_valid_moves()
@@ -202,6 +211,7 @@ class AlphaGhetto(object):
             self.refresh_position()
             considered_moves[move] = self.calculate_total_material(perspective)
             self.board.pop()
+        print(considered_moves)
         return max(considered_moves, key=considered_moves.get)
                 
 
