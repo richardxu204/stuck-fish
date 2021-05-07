@@ -10,4 +10,5 @@ stuckfish bot in development:
   added db to store games/positional evaluations
   added attacking identification module
   added starting point calculation for piece bonuses
+  unexpected behavior in capture prospects
 stuckfish v001
