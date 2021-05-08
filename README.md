@@ -11,4 +11,5 @@ stuckfish bot in development:
   added attacking identification module
   added starting point calculation for piece bonuses
   unexpected behavior in capture prospects
+  still need to fix a/h pawn push
 stuckfish v001
