@@ -29,7 +29,7 @@ class AlphaGhetto(object):
         self.piece_values = {'K': 10000, 'k': 10000, 'Q': 90, 'q': 90, 'R': 50, 'r': 50, 'B': 35, 'b': 35, 'N': 33, 'n': 33, 'P': 10, 'p': 10}
         self.chess = chess
         self.board = self.chess.Board()
-        self.move_spread = 20
+        self.move_spread = 10
         self.move_depth = 3
         
     '''
@@ -132,8 +132,8 @@ class AlphaGhetto(object):
                 defender_points = defender_points + int(self.piece_values.get(self.get_piece_at(attacker)))
             if piece_x == 3 or piece_x == 4:
                 if piece_y == 3 or piece_y == 4:
-                    bonus = bonus + 3
-                bonus = bonus + 5
+                    bonus = bonus + 2
+                bonus = bonus + 1
             elif piece_x == 2 or piece_x == 5:
                 bonus = bonus + 1
             if attacker_points >= defender_points:
@@ -148,8 +148,8 @@ class AlphaGhetto(object):
                 defender_points = defender_points + int(self.piece_values.get(self.get_piece_at(attacker)))
             if piece_x == 3 or piece_x == 4:
                 if piece_y == 3 or piece_y == 4:
-                    bonus = bonus + 3
-                bonus = bonus + 5
+                    bonus = bonus + 2
+                bonus = bonus + 1
             elif piece_x == 2 or piece_x == 5:
                 bonus = bonus + 1
             if attacker_points >= defender_points:
@@ -220,8 +220,11 @@ class AlphaGhetto(object):
                         attacker_points = attacker_points + self.piece_values[self.get_piece_at(attacker)]
         return bonus
     '''
-    def capture_immediate(self, piece_x, piece_y, perspective):
-        print("test")
+    def calculate_capture_immediate(self, capturer, captured, perspective='b'):
+        bonus = 0
+        if self.piece_values[capturer] <= self.piece_values[captured]:
+            bonus = bonus + self.piece_values[captured]
+        return bonus*2
 
     def simple_selection(self, perspective):
         considered_moves = {}
@@ -238,12 +241,19 @@ class AlphaGhetto(object):
             self.board.push(chess.Move.from_uci(move))
             self.fen = self.board.fen()
             self.refresh_position()
+            
             if len(move[2:]) == 2:
                 if self.get_piece_at(move[2:]) != 0:
                     considered_moves[move] = self.calculate_total_material(perspective, self.piece_values[self.get_piece_at(move[2:])])
+                    
             else:
                 considered_moves[move] = self.calculate_total_material(perspective)
             self.board.pop()
+            self.fen = self.board.fen()
+            self.refresh_position()
+            if len(move[2:]) == 2 and self.get_piece_at(move[2:]) != 0:
+                considered_moves[move] = considered_moves[move] + self.calculate_capture_immediate(self.get_piece_at(move[:2]), self.get_piece_at(move[2:]))
+
         print(considered_moves)
         return max(considered_moves, key=considered_moves.get)
                 
