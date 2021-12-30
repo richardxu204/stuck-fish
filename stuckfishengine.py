@@ -1,9 +1,11 @@
+from sqlite3.dbapi2 import Error
 import sys, os
 import chess
 import math
 import random
 import scipy, numpy, pandas, sklearn
 import sqlite3
+from sqlite3 import Error
 from stuckfishsupport import * 
 from alphaghetto import *
 
@@ -35,6 +37,22 @@ class Stuckfish(object):
 
     def get_position(self):
         return self.fen[:(findnth(self.fen, " ", 1) - 2)]
+
+    #Set up the database used to train chess model
+    def create_connection(db_file):
+        sql_connection = None
+        try: 
+            sql_connection = sqlite3.connect(db_file)
+        except Error as e:
+            print(e)
+
+        return sql_connection
+
+    def set_database(db_name):
+        path = os.getcwd + db_name + ".db"
+
+    def push_to_database():
+        pass
 
     '''
     def calculate_material(self):
