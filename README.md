@@ -148,8 +148,8 @@ the stuck-fish bot.
 
 - [x] Playable interface
 - [x] First iteration of stuck-fish bot (heuristics-based)
-- [] Update engine to store played games
-    - [] Update engine to analyze games and tweak play
+- [ ] Update engine to store played games
+    - [ ] Update engine to analyze games and tweak play
 
 See the [open issues](https://github.com/richmoolah/stuck-fish/issues) for tracked issues.
 
@@ -189,9 +189,7 @@ Project Link: [https://github.com/richmoolah/stuck-fish](https://github.com/rich
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
-* []()
-* []()
-* []()
+Thanks to python-chess for creating a FEN engine that I could use to visualize stuck-fish!
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
