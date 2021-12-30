@@ -104,8 +104,7 @@ To get a local copy up and running follow these simple example steps.
 ### Prerequisites
 
 This is an example of how to list things you need to use the software and how to install them.
-* apt-get
-    Install python3
+* Install python3
    ```sh
    sudo apt-get update
    sudo apt-get install python3
