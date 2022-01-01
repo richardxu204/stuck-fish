@@ -135,7 +135,7 @@ This is an example of how to list things you need to use the software and how to
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Stuck-fish is a simple chess interfact that ships with a stuck-fish bot that you can play against. When the application is started, you can simply select whether you want to play against another player or against
+Stuck-fish is a simple chess interface that ships with a stuck-fish bot that you can play against. When the application is started, you can simply select whether you want to play against another player or against
 the stuck-fish bot.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
